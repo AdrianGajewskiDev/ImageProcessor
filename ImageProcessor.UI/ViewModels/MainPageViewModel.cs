@@ -47,13 +47,28 @@ namespace ImageProcessor.UI.ViewModels
             }
         }
 
+        public bool ShowLoadingSpinner
+        {
+            get
+            {
+                return model.ShowLoadingSpinner;
+            }
+            set
+            {
+                model.ShowLoadingSpinner = value;
+                OnPropertyChanged(nameof(ShowLoadingSpinner));
+            }
+        }
+
         private string defaultImagePath = "../Images/addImageLogo.png";
 
         public MainPageViewModel()
         {
             model = new ImageProcessorModel();
+
             Message = StaticMessages.SelectImage;
             ImageSource = defaultImagePath;
+            ShowLoadingSpinner = false;
 
             OpenFileCommand = new Command(OpenFileCallback);
             RunSyncCommand = new Command(RunSync);
@@ -103,6 +118,7 @@ namespace ImageProcessor.UI.ViewModels
 
             try
             {
+                ShowLoadingSpinner = true;
                 stopwatch.Reset();
                 stopwatch.Start();
                 model.ConvertSync();
@@ -126,6 +142,7 @@ namespace ImageProcessor.UI.ViewModels
 
             try
             {
+                ShowLoadingSpinner = true;
                 UpdateUI(StaticMessages.Converting);
                 stopwatch.Reset();
                 stopwatch.Start();
@@ -171,6 +188,8 @@ namespace ImageProcessor.UI.ViewModels
         }
         private void Save()
         {
+            ShowLoadingSpinner = false;
+
             var ext = Path.GetExtension(ImageSource);
             var defaultName = Path.GetFileName(ImageSource).Replace(ext, string.Empty) + "_converted";
 

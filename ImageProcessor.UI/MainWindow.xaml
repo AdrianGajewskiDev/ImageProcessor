@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageProcessor.UI"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="Image Processor" Height="450" Width="800">
     <Grid>
@@ -28,6 +29,7 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
 
         <Grid.RowDefinitions>
@@ -42,6 +44,8 @@
         
         <Image Grid.Row="1" Source="{Binding ImageSource}"/>
 
+        <fa:ImageAwesome Grid.Row="1" Icon="Refresh" Spin="True" Height="48" Width="48" Visibility="{Binding ShowLoadingSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        
         <Grid Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Command="{Binding OpenFileCommand}">Open File</Button>

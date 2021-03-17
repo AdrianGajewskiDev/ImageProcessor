@@ -1,11 +1,9 @@
-﻿using ImageProcessor.Library;
-using ImageProcessor.UI.Commands;
+﻿using ImageProcessor.UI.Commands;
 using ImageProcessor.UI.Constants;
 using ImageProcessor.UI.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,16 +15,13 @@ namespace ImageProcessor.UI.ViewModels
     public class MainPageViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
-
         public void OnPropertyChanged(string name)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
 
         private ImageProcessorModel model;
-
         private Stopwatch stopwatch = new Stopwatch();
-
         public string ImageSource
         {
             get
@@ -39,7 +34,6 @@ namespace ImageProcessor.UI.ViewModels
                 OnPropertyChanged(nameof(ImageSource));
             }
         }
-
         public string Message
         {
             get
@@ -53,28 +47,37 @@ namespace ImageProcessor.UI.ViewModels
             }
         }
 
+        private string defaultImagePath = "../Images/addImageLogo.png";
 
         public MainPageViewModel()
         {
             model = new ImageProcessorModel();
             Message = StaticMessages.SelectImage;
+            ImageSource = defaultImagePath;
 
             OpenFileCommand = new Command(OpenFileCallback);
             RunSyncCommand = new Command(RunSync);
             RunAsyncCommand = new Command(async () => await RunAsync());
+            RemoveImageCommand = new Command(RemoveImageCallback);
         }
 
         public ICommand OpenFileCommand { get; set; }
         public ICommand RunSyncCommand { get; set; }
         public ICommand RunAsyncCommand { get; set; }
+        public ICommand RemoveImageCommand { get; set; }
 
-
+        public void RemoveImageCallback()
+        {
+            ImageSource = defaultImagePath;
+            model.Reset();
+            UpdateUI(StaticMessages.SelectImage);
+        }
         public void OpenFileCallback()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.ShowDialog();
 
-            if(!string.IsNullOrEmpty(fileDialog.FileName))
+            if (!string.IsNullOrEmpty(fileDialog.FileName))
             {
                 UpdateUI(StaticMessages.LoadingFile);
                 var fileName = Path.GetFullPath(fileDialog.FileName);
@@ -87,52 +90,62 @@ namespace ImageProcessor.UI.ViewModels
             else
                 MessageBox.Show("Invalid File Path", "Error", MessageBoxButtons.OK);
         }
-
         public void RunSync()
         {
-            stopwatch.Reset();
-            stopwatch.Start();
-            model.ConvertSync();
-            stopwatch.Stop();
+            if (!model.ImageSelected())
+            {
+                MessageBox.Show("Please select an image.", "Error", MessageBoxButtons.OK);
+                return;
+            }
 
             try
             {
+                stopwatch.Reset();
+                stopwatch.Start();
+                model.ConvertSync();
+                stopwatch.Stop();
+
                 Save();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Something went wrong.", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Something went wrong. Please try again", "Error", MessageBoxButtons.OK);
                 return;
             }
         }
-
         public async Task RunAsync()
         {
-            UpdateUI(StaticMessages.Converting);
-            stopwatch.Reset();
-            stopwatch.Start();
-            await model.ConvertAsync();
-            stopwatch.Stop();
+            if(!model.ImageSelected())
+            {
+                MessageBox.Show("Please select an image.", "Error", MessageBoxButtons.OK);
+                return;
+            }
 
             try
             {
+                UpdateUI(StaticMessages.Converting);
+                stopwatch.Reset();
+                stopwatch.Start();
+                await model.ConvertAsync();
+                stopwatch.Stop();
+
+
                 Save();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Something went wrong.", "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Something went wrong. Please try again", "Error", MessageBoxButtons.OK);
                 return;
             }
         }
-
         private void CheckFileExtensionCallback(object sender, CancelEventArgs e)
         {
             SaveFileDialog sv = (sender as SaveFileDialog);
             var extension = Path.GetExtension(sv.FileName).ToLower();
-            var previousExtension = Path.GetExtension(ImageSource);
-            if (extension != ".png" && extension != ".jpg" && extension != ".bmp")
+            var previousExtension = Path.GetExtension(ImageSource).ToLower();
+            if (extension != ".png" && extension != ".jpg" && extension != ".bmp" && extension != ".jpeg")
             {
-               
+
 
                 e.Cancel = true;
                 MessageBox.Show("Only PNG, JPG and BMP extensions are supported");
@@ -145,13 +158,11 @@ namespace ImageProcessor.UI.ViewModels
                 return;
             }
         }
-
         private void DisplayConvertedImage(string newImagePath)
         {
             ImageSource = newImagePath;
         }
-
-        private void UpdateUI(string message)
+        public void UpdateUI(string message)
         {
             Message = message;
         }

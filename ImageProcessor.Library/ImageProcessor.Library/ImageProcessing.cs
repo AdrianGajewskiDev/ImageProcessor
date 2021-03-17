@@ -63,5 +63,12 @@ namespace ImageProcessor.Library
         {
             image.Save(path, format);
         }
+
+        public bool ImageLoaded() => _originalImage != null;
+        public void Reset()
+        {
+            _originalImage = null;
+        }
+
     }
 }

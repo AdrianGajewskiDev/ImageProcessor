@@ -47,5 +47,13 @@ namespace ImageProcessor.UI.Models
             _imageProcessing.SaveImage(_convertedImage, path, format);
 
         }
+
+        public bool ImageSelected() => _imageProcessing.ImageLoaded();
+        public void Reset()
+        {
+            _imageProcessing.Reset();
+        }
+
+        public Bitmap GetConvertedImage() => _convertedImage;
     }
 }

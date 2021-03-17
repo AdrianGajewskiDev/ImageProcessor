@@ -45,8 +45,9 @@
         <Grid Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Command="{Binding OpenFileCommand}">Open File</Button>
-                <Button Command="{Binding RunSyncCommand}">Run Sync</Button>
-                <Button Command="{Binding RunAsyncCommand}">Run Async</Button>
+                <Button Command="{Binding RunSyncCommand}" Background="DarkOrange">Run Sync</Button>
+                <Button Command="{Binding RunAsyncCommand}" Background="OrangeRed">Run Async</Button>
+                <Button Command="{Binding RemoveImageCommand}" Background="IndianRed">Remove Image</Button>
             </StackPanel>
         </Grid>
     </Grid>

@@ -75,6 +75,9 @@ namespace ImageProcessor.UI.ViewModels
         public void OpenFileCallback()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Image files (*.jpg, *.jpeg, *.bmp, *.png) | *.jpg; *.jpeg; *.bmp; *.png";
+            fileDialog.DefaultExt = "png";
+            fileDialog.AddExtension = true;
             fileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(fileDialog.FileName))

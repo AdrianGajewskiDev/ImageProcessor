@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="ImageProcessingTests.cs" />
     <Compile Include="ImageProcessorModelTests.cs" />
-    <Compile Include="MainPageViewModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

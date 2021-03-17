@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="Image Processor" Height="450" Width="800">
     <Grid>
+        
         <Grid.Resources>
             <Style TargetType="{x:Type Button}">
                 <Setter Property="Margin" Value="5 15"/>
@@ -32,6 +33,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
 
+
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="4*"/>
@@ -44,7 +46,7 @@
         
         <Image Grid.Row="1" Source="{Binding ImageSource}"/>
 
-        <fa:ImageAwesome Grid.Row="1" Icon="Refresh" Spin="True" Height="48" Width="48" Visibility="{Binding ShowLoadingSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <fa:ImageAwesome Grid.Row="1" Icon="Refresh" Spin="True" Height="48" Width="48" Panel.ZIndex="11" Foreground="#fff" Visibility="{Binding ShowLoadingSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         
         <Grid Grid.Row="2">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -54,5 +56,8 @@
                 <Button Command="{Binding RemoveImageCommand}" Background="IndianRed">Remove Image</Button>
             </StackPanel>
         </Grid>
+        
+        <StackPanel Grid.Row="0" Grid.RowSpan="3" Background="Black" Panel.ZIndex="10" Opacity="0.8" Visibility="{Binding ShowLoadingSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
     </Grid>
 </Window>

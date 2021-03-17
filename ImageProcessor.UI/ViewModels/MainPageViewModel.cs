@@ -22,6 +22,7 @@ namespace ImageProcessor.UI.ViewModels
 
         private ImageProcessorModel model;
         private Stopwatch stopwatch = new Stopwatch();
+
         public string ImageSource
         {
             get
@@ -46,7 +47,6 @@ namespace ImageProcessor.UI.ViewModels
                 OnPropertyChanged(nameof(Message));
             }
         }
-
         public bool ShowLoadingSpinner
         {
             get
@@ -59,6 +59,17 @@ namespace ImageProcessor.UI.ViewModels
                 OnPropertyChanged(nameof(ShowLoadingSpinner));
             }
         }
+        public bool Converting
+        {
+            get
+            {
+                return model.Converting;
+            }
+            set
+            {
+                model.Converting = value;
+            }
+        }
 
         private string defaultImagePath = "../Images/addImageLogo.png";
 
@@ -68,7 +79,6 @@ namespace ImageProcessor.UI.ViewModels
 
             Message = StaticMessages.SelectImage;
             ImageSource = defaultImagePath;
-            ShowLoadingSpinner = false;
 
             OpenFileCommand = new Command(OpenFileCallback);
             RunSyncCommand = new Command(RunSync);
@@ -83,12 +93,18 @@ namespace ImageProcessor.UI.ViewModels
 
         public void RemoveImageCallback()
         {
+            if (Converting)
+                return;
+
             ImageSource = defaultImagePath;
             model.Reset();
             UpdateUI(StaticMessages.SelectImage);
         }
         public void OpenFileCallback()
         {
+            if (Converting)
+                return;
+
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Image files (*.jpg, *.jpeg, *.bmp, *.png) | *.jpg; *.jpeg; *.bmp; *.png";
             fileDialog.DefaultExt = "png";
@@ -110,6 +126,9 @@ namespace ImageProcessor.UI.ViewModels
         }
         public void RunSync()
         {
+            if (Converting)
+                return;
+
             if (!model.ImageSelected())
             {
                 MessageBox.Show("Please select an image.", "Error", MessageBoxButtons.OK);
@@ -118,7 +137,7 @@ namespace ImageProcessor.UI.ViewModels
 
             try
             {
-                ShowLoadingSpinner = true;
+                Converting = true;
                 stopwatch.Reset();
                 stopwatch.Start();
                 model.ConvertSync();
@@ -134,7 +153,10 @@ namespace ImageProcessor.UI.ViewModels
         }
         public async Task RunAsync()
         {
-            if(!model.ImageSelected())
+            if (Converting)
+                return;
+
+            if (!model.ImageSelected())
             {
                 MessageBox.Show("Please select an image.", "Error", MessageBoxButtons.OK);
                 return;
@@ -143,13 +165,13 @@ namespace ImageProcessor.UI.ViewModels
             try
             {
                 ShowLoadingSpinner = true;
+                Converting = true;
+
                 UpdateUI(StaticMessages.Converting);
                 stopwatch.Reset();
                 stopwatch.Start();
                 await model.ConvertAsync();
                 stopwatch.Stop();
-
-
                 Save();
             }
             catch (Exception ex)
@@ -189,6 +211,7 @@ namespace ImageProcessor.UI.ViewModels
         private void Save()
         {
             ShowLoadingSpinner = false;
+            Converting = false;
 
             var ext = Path.GetExtension(ImageSource);
             var defaultName = Path.GetFileName(ImageSource).Replace(ext, string.Empty) + "_converted";
@@ -222,6 +245,8 @@ namespace ImageProcessor.UI.ViewModels
                     UpdateUI(StaticMessages.TimeElapsed(stopwatch.ElapsedMilliseconds));
                 }
             }
+            else
+                UpdateUI(StaticMessages.Canceled);
 
         }
     }

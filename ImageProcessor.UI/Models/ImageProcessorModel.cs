@@ -12,7 +12,8 @@ namespace ImageProcessor.UI.Models
         public string ImageSource { get; set; }
         public string Message { get; set; }
         public double ElapsedTime { get; set; }
-        public bool ShowLoadingSpinner { get; set; }
+        public bool ShowLoadingSpinner { get; set; } = false;
+        public bool Converting { get; set; } = false;
 
         private ImageProcessing _imageProcessing;
 

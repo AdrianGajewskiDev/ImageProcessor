@@ -61,6 +61,7 @@ namespace ImageProcessor.Library
             BitmapData data = newImage.LockBits(new Rectangle(0, 0, newImage.Width, newImage.Height), ImageLockMode.ReadWrite, newImage.PixelFormat);
 
             //Calculates total bytes amount in bitmap
+            //stride is total amount of pixels in bytes in single row
             var totalBytes = data.Stride * data.Height;
 
             byte[] allPixels = new byte[totalBytes];
@@ -71,12 +72,12 @@ namespace ImageProcessor.Library
             //gets a single pixel size
             var pixelSize = Bitmap.GetPixelFormatSize(newImage.PixelFormat) / 8;
 
-            ///calculates a total width of pixels in one row
+            ///calculates a total width of pixels in single row
             int totalWidth = data.Width * pixelSize;
 
             for (int y = 0; y < data.Height; y++)
             {
-                //calculates the current line.
+                //calculates the current line. 
                 var currentLine = y * data.Stride;
 
                 //loops throught all pixels in one row

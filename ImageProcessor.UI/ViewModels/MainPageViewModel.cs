@@ -105,24 +105,29 @@ namespace ImageProcessor.UI.ViewModels
             if (Converting)
                 return;
 
+            UpdateUI(StaticMessages.LoadingFile);
+
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Image files (*.jpg, *.jpeg, *.bmp, *.png) | *.jpg; *.jpeg; *.bmp; *.png";
             fileDialog.DefaultExt = "png";
             fileDialog.AddExtension = true;
             fileDialog.ShowDialog();
 
+
             if (!string.IsNullOrEmpty(fileDialog.FileName))
             {
-                UpdateUI(StaticMessages.LoadingFile);
                 var fileName = Path.GetFullPath(fileDialog.FileName);
+
                 ImageSource = fileName;
-
                 model.LoadImage();
-                UpdateUI(StaticMessages.FileLoaded);
 
+                UpdateUI(StaticMessages.FileLoaded);
             }
             else
+            {
+                UpdateUI(StaticMessages.Canceled);
                 MessageBox.Show("Invalid File Path", "Error", MessageBoxButtons.OK);
+            }
         }
         public void RunSync()
         {
@@ -164,7 +169,7 @@ namespace ImageProcessor.UI.ViewModels
 
             try
             {
-                ShowLoadingSpinner = true;
+                EnableLoadingScreen();
                 Converting = true;
 
                 UpdateUI(StaticMessages.Converting);
@@ -210,7 +215,7 @@ namespace ImageProcessor.UI.ViewModels
         }
         private void Save()
         {
-            ShowLoadingSpinner = false;
+            DisableLoadingScreen();
             Converting = false;
 
             var ext = Path.GetExtension(ImageSource);
@@ -249,5 +254,8 @@ namespace ImageProcessor.UI.ViewModels
                 UpdateUI(StaticMessages.Canceled);
 
         }
+
+        private void EnableLoadingScreen() => ShowLoadingSpinner = true;
+        private void DisableLoadingScreen() => ShowLoadingSpinner = false;
     }
 }

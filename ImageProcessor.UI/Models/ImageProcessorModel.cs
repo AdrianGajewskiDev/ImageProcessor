@@ -24,8 +24,16 @@ namespace ImageProcessor.UI.Models
             _imageProcessing = new ImageProcessing();
         }
 
+
+        public async Task LoadImageAsync()
+        {
+
+            await Task.Run(() => _imageProcessing.LoadImage(ImageSource));
+
+        }
         public void LoadImage()
         {
+
             if (File.Exists(ImageSource))
             {
                 _imageProcessing.LoadImage(ImageSource);
@@ -41,7 +49,7 @@ namespace ImageProcessor.UI.Models
 
         public async Task ConvertAsync()
         {
-            _convertedImage =  await _imageProcessing.ToMainColorsAsync();
+            _convertedImage = await _imageProcessing.ToMainColorsAsync();
         }
 
         public void SaveConvertedImage(string path, ImageFormat format)

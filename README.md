@@ -10,7 +10,13 @@
 ## Preview
 ![Paste Image](https://github.com/AdrianGajewskiDev/ImageProcessor/blob/main/assets/preview1.PNG)
 
-## In work:
+## Usage:
+1. Select image from disk
+2. Click RunSync to run synchronous version or click RunAsync to run asynchronous version
+3. Once the converting is done you will be asked to select where you want to save the newly created image
+4. Then program will display the converted image as well as the time needed to complete the conversion
+
+
 Select Image           |  Result
 :-------------------------:|:-------------------------:
 ![](https://github.com/AdrianGajewskiDev/ImageProcessor/blob/main/assets/preview2.PNG)|![](https://github.com/AdrianGajewskiDev/ImageProcessor/blob/main/assets/preview2c.PNG)
